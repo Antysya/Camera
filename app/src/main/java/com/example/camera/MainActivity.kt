@@ -15,6 +15,8 @@ import com.example.camera.ui.theme.CameraTheme
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.app.ActivityCompat
 import android.Manifest
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,10 +72,11 @@ class MainActivity : ComponentActivity() {
         return result
     }
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     private fun askMediaPermissions(): String {
         var result= ""
         //создаем функцию для запроса прав
-        val cameraPermissionRequest = registerForActivityResult(
+        val mediaPermissionRequest = registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED, false) -> {
@@ -81,7 +84,7 @@ class MainActivity : ComponentActivity() {
                     //fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
                     result = "Permission granted"
                 } else -> {
-                // отказано пользователем в доступе к камере
+                // отказано пользователем в доступе
                 result = "No media permission"
                 //return@registerForActivityResult
             }
@@ -94,7 +97,7 @@ class MainActivity : ComponentActivity() {
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             //если права еще не выданы, вызываем функцию для запроса прав
-            cameraPermissionRequest.launch(arrayOf(
+            mediaPermissionRequest.launch(arrayOf(
                 Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED))
         } else {
             result = "We have media permission"
